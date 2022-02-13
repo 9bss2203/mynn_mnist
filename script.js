@@ -4,8 +4,6 @@ const WEIGHTS_LENGTH = 101770;
 let ctx;
 let percentageCtx;
 let resultDOM;
-let x;
-let y;
 let isDrawing;
 let weights = [];
 
@@ -102,6 +100,31 @@ function loadModel(){
 }
 
 
+//書き始め
+function handleStart(x,y){
+	isDrawing = true;
+	ctx.beginPath();
+	ctx.moveTo(x,y);
+}
+
+//書いている途中
+function handleMove(x,y){
+	if(isDrawing){
+		ctx.lineTo(x,y);
+		ctx.stroke();
+		inference();
+	}	
+}
+
+//書き終わり
+function handleEnd(x,y){
+	ctx.lineTo(x,y);
+	ctx.stroke();
+	isDrawing = false;
+	inference();
+}
+
+
 window.addEventListener("load",()=>{
 	//変数を設定
 	let canvas = document.getElementsByTagName("canvas")[0];
@@ -114,28 +137,35 @@ window.addEventListener("load",()=>{
 
 	//マウスイベントを登録
 	canvas.addEventListener("mousedown",(e)=>{
-		x = e.offsetX/300*28;
-		y = e.offsetY/300*28;
-		isDrawing = true;
-		ctx.beginPath();
-		ctx.moveTo(x,y);
+		let x = e.offsetX/300*28;
+		let y = e.offsetY/300*28;
+		handleStart(x,y);
 	});
 	canvas.addEventListener("mousemove",(e)=>{
-		if(isDrawing){
-			x = e.offsetX/300*28;
-			y = e.offsetY/300*28;
-			ctx.lineTo(x,y);
-			ctx.stroke();
-			inference();
-		}
+		let x = e.offsetX/300*28;
+		let y = e.offsetY/300*28;
+		handleMove(x,y);
 	});
 	canvas.addEventListener("mouseup",(e)=>{
-		x = e.offsetX/300*28;
-		y = e.offsetY/300*28;
-		ctx.lineTo(x,y);
-		ctx.stroke();
-		isDrawing = false;
-		inference();
+		let x = e.offsetX/300*28;
+		let y = e.offsetY/300*28;
+		handleEnd(x,y);
+	});
+	//タッチイベントを登録
+	canvas.addEventListener("touchstart",(e)=>{
+		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
+		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
+		handleStart(x,y);
+	});
+	canvas.addEventListener("touchmove",(e)=>{
+		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
+		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
+		handleMove(x,y);
+	});
+	canvas.addEventListener("touchend",(e)=>{
+		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
+		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
+		handleEnd(x,y);
 	});
 
 	//モデルの読み込み

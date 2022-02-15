@@ -8,16 +8,17 @@
 		<meta name="viewport" content="width=device-width,initial-scale=0.7,user-scalable=no">
 	</head>
 	<body>
-		<h1>手書き数字の認識</h1>
-		<p>　C言語で自作したDNNライブラリでmnistを学習。推論部分をjavascriptに移植し、手書き数字を推論できるようにしました。</p>
-		<div>
-			<canvas width="28" height="28" id="input"></canvas><br>
+		<header>
+			<h1>手書き数字の認識</h1>
+			<p>C言語で自作したDNNライブラリでmnistを学習。推論部分をjavascriptに移植し、手書き数字を推論できるようにしました。</p>
+			<a href="https://github.com/9bss2203/mynn_mnist">GitHub</a>
+		</header>
+		<div id="content">
+			<div id="draw_area">
+				<canvas width="300" height="300" id="lines"></canvas>
+				<canvas width="28" height="28" id="input"></canvas>
+			</div>
 			<input type="button" value="クリア" onclick="cleanCanvas();">
-		</div>
-		<div>
-			結果：<span id="result"></span>
-		</div>
-		<div>
 			<canvas width="300" height="300" id="percentage"></canvas>
 		</div>
 	</body>

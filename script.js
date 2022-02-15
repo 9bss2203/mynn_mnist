@@ -3,7 +3,6 @@ const WEIGHTS_LENGTH = 101770;
 
 let ctx;
 let percentageCtx;
-let resultDOM;
 let isDrawing;
 let weights = [];
 
@@ -13,11 +12,13 @@ function cleanCanvas(){
 	isDrawing = false;
 	ctx.beginPath();
 	ctx.clearRect(0,0,300,300);
-	ctx.fillStyle = "#FFF";
-	ctx.fillRect(0,0,28,28);
 	//結果表示部分
-	resultDOM.innerHTML = "";
 	percentageCtx.clearRect(0,0,300,300);
+	percentageCtx.fillStyle = "#b0bec5";
+	for(let i = 0;i < 10;i++){
+		percentageCtx.fillText(i,2,30*i+25);
+		percentageCtx.fillRect(30,30*i+5,1,20);
+	}
 }
 
 //推論を行う
@@ -27,10 +28,8 @@ function inference(){
 	let imageData = ctx.getImageData(0,0,28,28).data;
 	let inputData = [];
 	for(let i = 0;i < 784;i++){
-		let r = imageData[i*4+0];
-		let g = imageData[i*4+1];
-		let b = imageData[i*4+2];
-		inputData.push(1-(((r+g+b)/3.0)/255));
+		let alpha = imageData[i*4+3];
+		inputData.push(alpha/255.0);
 	}
 	//中間層の値の計算
 	let middleData = [];
@@ -59,20 +58,17 @@ function inference(){
 			maxValue = outputData[i];
 		}
 	}
-	//最大の添字を表示
-	resultDOM.innerHTML = maxIndex;
 	//各数字の確率を表示
-	percentageCtx.font = "28px sans-serif";
 	percentageCtx.clearRect(0,0,300,300);
 	for(let i = 0;i < 10;i++){
 		let width = outputData[i]*260;
 		if(i == maxIndex){
-			percentageCtx.fillStyle = "#00F";
+			percentageCtx.fillStyle = "#37474f";
 		}else{
-			percentageCtx.fillStyle = "#000";
+			percentageCtx.fillStyle = "#b0bec5";
 		}
 		percentageCtx.fillText(i,2,30*i+25);
-		percentageCtx.fillRect(30,30*i+5,width,20);
+		percentageCtx.fillRect(30,30*i+5,width+1,20);
 	}
 }
 
@@ -127,10 +123,18 @@ function handleEnd(x,y){
 
 window.addEventListener("load",()=>{
 	//変数を設定
-	let canvas = document.getElementsByTagName("canvas")[0];
+	let canvas = document.getElementById("input");
 	ctx = canvas.getContext("2d");
-	resultDOM = document.getElementById("result");
 	percentageCtx = document.getElementById("percentage").getContext("2d");
+	percentageCtx.font = "28px sans-serif";
+
+	//背景のキャンバスに線を引く
+	let backgroundCtx = document.getElementById("lines").getContext("2d");
+	backgroundCtx.fillStyle = "#afbdc4";
+	for(let i = 1;i < 28;i++){
+		backgroundCtx.fillRect(0,Math.round(300/28*i),300,1);
+		backgroundCtx.fillRect(Math.round(300/28*i),0,1,300);
+	}
 
 	//キャンバスをリセット
 	cleanCanvas();

@@ -128,14 +128,6 @@ window.addEventListener("load",()=>{
 	percentageCtx = document.getElementById("percentage").getContext("2d");
 	percentageCtx.font = "28px sans-serif";
 
-	//背景のキャンバスに線を引く
-	let backgroundCtx = document.getElementById("lines").getContext("2d");
-	backgroundCtx.fillStyle = "#afbdc4";
-	for(let i = 1;i < 28;i++){
-		backgroundCtx.fillRect(0,Math.round(300/28*i),300,1);
-		backgroundCtx.fillRect(Math.round(300/28*i),0,1,300);
-	}
-
 	//キャンバスをリセット
 	cleanCanvas();
 
@@ -157,16 +149,19 @@ window.addEventListener("load",()=>{
 	});
 	//タッチイベントを登録
 	canvas.addEventListener("touchstart",(e)=>{
+		e.preventDefault();
 		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
 		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
 		handleStart(x,y);
 	});
 	canvas.addEventListener("touchmove",(e)=>{
+		e.preventDefault();
 		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
 		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
 		handleMove(x,y);
 	});
 	canvas.addEventListener("touchend",(e)=>{
+		e.preventDefault();
 		let x = (e.changedTouches[0].pageX-canvas.getBoundingClientRect().left-window.pageXOffset)/300*28;
 		let y = (e.changedTouches[0].pageY-canvas.getBoundingClientRect().top -window.pageYOffset)/300*28;
 		handleEnd(x,y);
